@@ -24,31 +24,33 @@ def show_image(data):
     plt.show()
 
 
-def load_data(data_dir, labeled=True):
+def load_data():
     """
     Load data
     """
-    if labeled:
-        class_mode = 'categorical'
-    else:
-        class_mode = None
 
-    datagen = ImageDataGenerator(
+    train_gen = ImageDataGenerator(
         rescale=1./255,
         rotation_range=10,
         zoom_range=0.2,
         horizontal_flip=True
     )
 
-    data = datagen.flow_from_directory(
-        data_dir,
+    test_gen = ImageDataGenerator(rescale=1./255)
+
+    train_data = train_gen.flow_from_directory(
+        TRAIN_DIR,
         target_size=(IMAGE_SHAPE[:2]),
         batch_size=BATCH_SIZE,
         class_mode='categorical'
     )
 
-    return data
+    test_data = test_gen.flow_from_directory(
+        VAL_DIR,
+        target_size=(IMAGE_SHAPE[:2]),
+        batch_size=BATCH_SIZE,
+        class_mode='categorical'
+    )
 
+    return train_data, test_data
 
-data = load_data(TRAIN_DIR)
-show_image(data)
